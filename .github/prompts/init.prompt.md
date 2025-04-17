@@ -1,0 +1,3 @@
+Create a MCP Server for Pokemon TCG data that:
+- provides an interface to search through and retrieve data from the json files in `data/` directory, which holds the data for Pokemon TCG Cards, which contains an array of JSON Objects with properties defined by the `card-object-api-docs.md` file.
+- provides an interface to search through and retrieve information from `data/jtg_rulebook_en.pdf`, which holds the rules for Pokemon TCG.
