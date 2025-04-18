@@ -1,0 +1,16 @@
+{
+    "servers": {
+        "my-mcp-server-7319229e": {
+            "type": "stdio",
+            "command": "deno",
+            "args": [
+                "run",
+                "--allow-net",
+                "--allow-env",
+                "--allow-read",
+                "--watch",
+                "/home/nick/Projects/Pokemon-TCG-MCP-Server/main.ts"
+            ]
+        }
+    }
+}

@@ -1,3 +1,7 @@
-Create a MCP Server for Pokemon TCG data that:
+Your task is to create a MCP Server for Pokemon TCG data that:
 - provides an interface to search through and retrieve data from the json files in `data/` directory, which holds the data for Pokemon TCG Cards, which contains an array of JSON Objects with properties defined by the `card-object-api-docs.md` file.
 - provides an interface to search through and retrieve information from `data/jtg_rulebook_en.pdf`, which holds the rules for Pokemon TCG.
+
+Use #fetch:https://modelcontextprotocol.io/llms-full.txt and #fetch:https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/README.md to help you understand the MCP Server and how to implement it.
+
+The server should be in the `server/` directory and should be implemented in TypeScript via Deno. Run any necessary commands to set up the server and install dependencies. The server should be able to handle requests for both the card data and the rulebook data, and return the results in a structured format. The server should also be able to handle errors gracefully and provide meaningful error messages to the user. Make use of the ModelContextProtocol Typescript SDK to implement the server. The server should be able to run locally and be tested with sample requests.
