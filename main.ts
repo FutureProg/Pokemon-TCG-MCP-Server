@@ -70,6 +70,10 @@ server.tool(
   })
 )
 
+server.prompt("Get list of Pokemon", "Get list of Pokemon", () => ({
+
+});
+
 const transport = new StdioServerTransport();
 await server.connect(transport).catch((error) => {
   console.error("Fatal error running server:", error);
