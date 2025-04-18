@@ -36,7 +36,7 @@ const energyCards = loadJsonData("./data/Standard-Energy-Cards-2025-04-10T01-36-
 
 server.resource(
   "cards",
-  "cards://all",
+  "file://all-cards.json",
   (uri) => {
     console.log(`Loaded ${pokemonCards.length} Pokemon cards, ${trainerCards.length} trainer cards, and ${energyCards.length} energy cards`);
     return {
@@ -68,11 +68,60 @@ server.tool(
       mimeType: "application/json"
     }]
   })
-)
+);
 
-server.prompt("Get list of Pokemon", "Get list of Pokemon", () => ({
+server.tool(
+  "find-card-by-name",
+  "Find a Pokemon TCG card by its name",
+  {name: z.string()},
+  ({name}) => ({
+    content: [{
+      type: 'resource',
+      resource: {
+        uri: `file://${name}-cards.json`,
+        mimeType: "application/json",
+        text: JSON.stringify(
+          [...pokemonCards, ...trainerCards, ...energyCards].filter((card) => card.name.toLowerCase().includes(name.toLowerCase()))
+        )
+      }
+    }]
+  })
+);
 
-});
+server.prompt(
+  "find-card-by-name", 
+  "Find a Pokemon TCG card by its name",
+  {name: z.string()},
+  ({name}) => ({
+    description: `Find a Pokemon TCG card by its name`,
+    messages: [
+      {
+        role: "user",
+        content: {
+          type: "text",
+          text: `Find a Pokemon TCG card by its name: ${name}`
+        }
+      },
+      {
+        role: "assistant",
+        content: {
+          type: "text",
+          text: `Here are the cards that match the name "${name}":`
+        }
+      },
+      {
+        role: "assistant",
+        content: {
+          type: "text",
+          text: JSON.stringify(
+            [...pokemonCards, ...trainerCards, ...energyCards].filter((card) => card.name.toLowerCase().includes(name.toLowerCase()))
+          ),
+          mimeType: "application/json"
+        }
+      }
+    ]
+  })
+);
 
 const transport = new StdioServerTransport();
 await server.connect(transport).catch((error) => {
