@@ -11,6 +11,9 @@
                 "--watch",
                 "/home/nick/Projects/Pokemon-TCG-MCP-Server/main.ts"
             ]
-        }
+        },
+        // "my-mcp-server-fd542ca1": {
+        //     "url": "http://localhost:3000"
+        // }
     }
 }
