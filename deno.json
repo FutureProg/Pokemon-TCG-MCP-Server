@@ -3,7 +3,7 @@
     "dev": "deno run --allow-net --allow-read --allow-env --watch main.ts",
     "dev:http": "MCP_SERVER_TRANSPORT=http deno run --allow-net --allow-read --allow-env --watch main.ts",
     "start": "deno run --allow-net --allow-read --allow-env main.ts",
-    "start:http": "MCP_SERVER_TRANSPORT=http deno run --allow-net --allow-read --allow-env main.ts",
+    "start:http": "MCP_SERVER_TRANSPORT=http deno serve --allow-net --allow-read --allow-env main.ts",
     "test": "deno test --allow-net --allow-read --allow-env integration.test.ts"
   },
   "imports": {
