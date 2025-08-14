@@ -12,33 +12,40 @@ const server = new McpServer({
   version: "1.1.0",
 });
 
-const app = express();
-app.use(express.text());
-app.use(express.json());
-
 // Register all card tools and prompts
 registerCardTools(server);
 registerPaginatedCardTools(server);
+console.log("Starting MCP server");
+const transportType = Deno.env.get("MCP_SERVER_TRANSPORT") ?? 'stdio';
+console.log(`Transport Type: ${transportType}`);
+if (transportType === "http") {
+  const app = express();
+  console.log("Starting express");
+  // No middleware - let the transport handle everything
 
-// Create a single transport instance
-// const transport = new StreamableHTTPServerTransport({
-//   sessionIdGenerator: () => crypto.randomUUID()
-// });
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined
+  });
 
-const transport = new StdioServerTransport();
+  // Connect the server to the transport once at startup
+  await server.connect(transport);
 
-// Connect the server to the transport once
-await server.connect(transport).catch((error) => {
-  console.error("Fatal error connecting server:", error);
-  exit(1);
-});
+  // Handle all MCP requests (GET, POST, DELETE) at a single endpoint
+  app.all('/mcp', async (req, res) => {
+    // Handle the request using the pre-connected transport
+    await transport.handleRequest(req, res);
+  });
 
-// app.all("/", async (req, res) => {
-//   // Only handle the request, don't create a new connection
-//   await transport.handleRequest(req, res);
-// });
+  app.listen(3000, () => {
+    console.log("Server is running on http://localhost:3000/mcp");
+    console.log("Press Ctrl+C to stop the server.");
+  });
+} else {
+  const transport = new StdioServerTransport();
 
-// app.listen(3000, () => {
-//   console.log("Server is running on http://localhost:3000");
-//   console.log("Press Ctrl+C to stop the server.");
-// });
+  // Connect the server to the transport once
+  await server.connect(transport).catch((error) => {
+    console.error("Fatal error connecting server:", error);
+    exit(1);
+  });
+}
