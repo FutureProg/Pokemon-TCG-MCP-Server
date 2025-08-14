@@ -10,5 +10,6 @@
     "@types/node": "npm:@types/node@^24.2.1",
     "express": "npm:express@^5.1.0",
     "jsonata": "npm:jsonata@^2.0.6"
-  }
+  },
+  "nodeModulesDir": "auto"
 }
