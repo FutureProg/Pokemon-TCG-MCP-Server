@@ -9,6 +9,8 @@
     "@types/express": "npm:@types/express@^5.0.1",
     "@types/node": "npm:@types/node@^24.2.1",
     "express": "npm:express@^5.1.0",
+    "fetch-to-node": "npm:fetch-to-node@^2.1.0",
+    "hono": "npm:hono@^4.9.1",
     "jsonata": "npm:jsonata@^2.0.6"
   },
   "nodeModulesDir": "auto"
