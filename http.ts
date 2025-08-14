@@ -51,7 +51,7 @@ export const startHttpServer = (serverArgs: ServerImplementation) => {
     const req = new Request(originalRequest.url, {
       method: originalRequest.method,
       headers,
-      body: bodyText
+      body: c.req.method === 'POST' ? bodyText : undefined
     });
     const { req: nodeReq, res: nodeRes } = toReqRes(req);
     // nodeRes.on('close', () => {
