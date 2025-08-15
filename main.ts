@@ -3,11 +3,10 @@ import { startHttpServer } from "./http.ts";
 import { startStdioServer } from "./stdio.ts";
 
 // Initialize the MCP server
-const serverArgs = {
+const serverArgs: ServerImplementation = {
   name: "Pokemon TCG",
-  version: "1.1.0",
-  instructions: Deno.env.get("INSTRUCTIONS"),
-} satisfies ServerImplementation;
+  version: "1.1.0"
+};
 
 console.log("Starting MCP server");
 const transportType = Deno.env.get("MCP_SERVER_TRANSPORT") ?? 'stdio';

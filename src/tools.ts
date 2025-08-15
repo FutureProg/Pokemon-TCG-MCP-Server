@@ -44,42 +44,42 @@ export function registerCardTools(server: McpServer) {
       }],
     }),
   );
-  server.prompt(
-    "find-card-by-name",
-    "Find a Pokemon TCG card by its name",
-    { name: z.string() },
-    ({ name }: { name: string }) => ({
-      description: `Find a Pokemon TCG card by its name`,
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Find a Pokemon TCG card by its name: ${name}`,
-          },
-        },
-        {
-          role: "assistant",
-          content: {
-            type: "text",
-            text: `Here are the cards that match the name \"${name}\":`,
-          },
-        },
-        {
-          role: "assistant",
-          content: {
-            type: "text",
-            text: JSON.stringify(
-              [...pokemonCards, ...trainerCards, ...energyCards].filter((
-                card,
-              ) => card.name.toLowerCase().includes(name.toLowerCase())),
-            ),
-            mimeType: "application/json",
-          },
-        },
-      ],
-    }),
-  );
+  // server.prompt(
+  //   "find-card-by-name",
+  //   "Find a Pokemon TCG card by its name",
+  //   { name: z.string() },
+  //   ({ name }: { name: string }) => ({
+  //     description: `Find a Pokemon TCG card by its name`,
+  //     messages: [
+  //       {
+  //         role: "user",
+  //         content: {
+  //           type: "text",
+  //           text: `Find a Pokemon TCG card by its name: ${name}`,
+  //         },
+  //       },
+  //       {
+  //         role: "assistant",
+  //         content: {
+  //           type: "text",
+  //           text: `Here are the cards that match the name \"${name}\":`,
+  //         },
+  //       },
+  //       {
+  //         role: "assistant",
+  //         content: {
+  //           type: "text",
+  //           text: JSON.stringify(
+  //             [...pokemonCards, ...trainerCards, ...energyCards].filter((
+  //               card,
+  //             ) => card.name.toLowerCase().includes(name.toLowerCase())),
+  //           ),
+  //           mimeType: "application/json",
+  //         },
+  //       },
+  //     ],
+  //   }),
+  // );
 
   // Find cards with self-damage
   server.tool(
