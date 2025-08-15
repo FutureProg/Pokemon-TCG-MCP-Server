@@ -4,6 +4,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { toReqRes, toFetchResponse } from "fetch-to-node";
 import { registerPaginatedCardTools } from "./src/paginated-tools.ts";
 import { registerCardTools } from "./src/tools.ts";
+import { registerApiTools } from "./src/apiTools.ts";
 
 export const startHttpServer = (serverArgs: ServerImplementation) => {
   console.log("Starting HTTP Server");
@@ -14,6 +15,10 @@ export const startHttpServer = (serverArgs: ServerImplementation) => {
   // Register all card tools and prompts
   registerCardTools(server);
   registerPaginatedCardTools(server);
+  if (Deno.env.get("FLAG_TCG_API") == 'true') {
+    console.log("Registering API tools for Pokémon TCG");
+    registerApiTools(server);
+  }
 
   // Create transport with enableJsonResponse: true to return JSON instead of SSE
   const transport = new StreamableHTTPServerTransport({
