@@ -2,87 +2,110 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Implementation as ServerImplementation } from "@modelcontextprotocol/sdk/types.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { toReqRes, toFetchResponse } from "fetch-to-node";
-import { Hono } from "hono";
 import { registerPaginatedCardTools } from "./src/paginated-tools.ts";
 import { registerCardTools } from "./src/tools.ts";
 
 export const startHttpServer = (serverArgs: ServerImplementation) => {
-    const app = new Hono();
-  console.log("Starting Hono Server");
-  // No middleware - let the transport handle everything  
+  console.log("Starting HTTP Server");
+  
+  // Create the MCP server
+  const server = new McpServer(serverArgs, { enforceStrictCapabilities: true });
+  
+  // Register all card tools and prompts
+  registerCardTools(server);
+  registerPaginatedCardTools(server);
 
-  // Handle all MCP requests (GET, POST, DELETE) at a single endpoint
-  app.post('/', async (c) => {
-    // Handle the request using the pre-connected transport
-    const originalRequest = await c.req.raw;
-    const bodyText = await originalRequest.text();
-    // Starting MCP Server Instance
-    const server = new McpServer(serverArgs, {enforceStrictCapabilities: true});
-        // Register all card tools and prompts
-    registerCardTools(server);
-    registerPaginatedCardTools(server);
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined
-    });
-
-
-    // convert to an MCP request
-    const headers = new Headers(originalRequest.headers);
-    // const host = headers.get("Host");
-
-    // // Remove the port
-    // if (host) {
-    //   headers.set("Host", host.split(":")[0]);
-    // }
-
-    // if (!headers.get("Origin")) {
-    //   try {
-    //     const requestUrl = new URL(originalRequest.url);
-    //     headers.set("Origin", requestUrl.origin);
-    //   } catch (_error: unknown) {
-    //     console.log("No request origin, falling back to the MCP Server");
-    //   }
-    // }
-    headers.set("Content-Type", "application/json");
-
-    console.log("Convert Request");
-    const req = new Request(originalRequest.url, {
-      method: originalRequest.method,
-      headers,
-      body: bodyText
-    });
-    const { req: nodeReq, res: nodeRes } = toReqRes(req);
-    nodeRes.on('close', () => {
-      console.log("Request closed");
-      transport.close();
-      server.close();
-    });
-
-    await server.connect(transport);
-    await transport.handleRequest(nodeReq, nodeRes, bodyText);    
-    console.log("Request handled by MCP Server");
-    return toFetchResponse(nodeRes);
+  // Create transport with enableJsonResponse: true to return JSON instead of SSE
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: () => crypto.randomUUID(),
+    enableJsonResponse: true,  // This is the key fix!    
   });
-
-  app.delete('/', async (c) => {
-    let denoReq = new Request(c.req.raw.url, {
-      method: 'DELETE',
-      headers: new Headers(c.req.raw.headers),
-      body: await c.req.raw.text()
+  
+  // Connect the server to the transport
+  server.connect(transport).then(() => {
+    console.log("MCP Server connected to HTTP transport");
+    
+    // Start the HTTP server on port 8000
+    const port = 8000;
+    console.log(`Listening on http://0.0.0.0:${port}/ (http://localhost:${port}/)`);
+    
+    Deno.serve({ port }, async (req) => {
+      console.log(`${req.method} ${req.url}`);
+      
+      if (req.method === "POST") {
+        try {
+          const bodyText = await req.text();
+          console.log("Request body:", bodyText);
+          
+          // Prepare headers for MCP transport
+          const headers = new Headers(req.headers);
+          
+          // Strip port from Host header if present (DNS rebinding protection)
+          const host = headers.get("Host");
+          if (host) {
+            headers.set("Host", host.split(":")[0]);
+          }
+          
+          // Ensure Origin header is set
+          if (!headers.get("Origin")) {
+            try {
+              const requestUrl = new URL(req.url);
+              headers.set("Origin", requestUrl.origin);
+            } catch {
+              // If we can't parse the URL, don't set a default Origin
+            }
+          }
+          
+          headers.set("Content-Type", "application/json");
+          
+          // Create new Request with prepared headers
+          const mcpRequest = new Request(req.url, {
+            method: req.method,
+            headers,
+            body: bodyText,
+          });
+          
+          // Convert to Node.js request/response objects
+          const { req: nodeReq, res: nodeRes } = toReqRes(mcpRequest);
+          
+          // Handle the request through the transport
+          await transport.handleRequest(nodeReq, nodeRes);
+          
+          // Convert back to Deno Response
+          const response = toFetchResponse(nodeRes);
+          console.log("Request handled by MCP Server");
+          return response;
+        } catch (error) {
+          console.error("Error processing request:", error);
+          return new Response(JSON.stringify({
+            jsonrpc: "2.0",
+            error: {
+              code: -32000,
+              message: "Internal server error"
+            },
+            id: null
+          }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+      } else {
+        // Return method not allowed for non-POST requests
+        return new Response(JSON.stringify({
+          jsonrpc: "2.0",
+          error: {
+            code: -32000,
+            message: "Method not allowed."
+          },
+          id: null
+        }), {
+          status: 405,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
     });
-
-    const {res, req} = toReqRes(denoReq);
-    res.writeHead(405).end(JSON.stringify({
-      jsonrpc: "2.0",
-      error: {
-        code: -32000,
-        message: "Method not allowed."
-      },
-      id: null
-    }));
-
-    return toFetchResponse(res);
+  }).catch((error) => {
+    console.error("Failed to connect server to transport:", error);
+    Deno.exit(1);
   });
-
-  Deno.serve(app.fetch);
-}
+};
