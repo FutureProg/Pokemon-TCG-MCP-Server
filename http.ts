@@ -12,7 +12,7 @@ export const startHttpServer = (serverArgs: ServerImplementation) => {
   // No middleware - let the transport handle everything  
 
   // Handle all MCP requests (GET, POST, DELETE) at a single endpoint
-  app.on(['GET', 'POST'],'/', async (c) => {
+  app.all('/', async (c) => {
     // Handle the request using the pre-connected transport
     const originalRequest = await c.req.raw;
     const bodyText = await originalRequest.text();
