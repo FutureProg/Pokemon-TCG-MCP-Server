@@ -1,8 +1,8 @@
 // MCP tools and prompts registration for card queries
 import { z } from "npm:zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { energyCards, pokemonCards, trainerCards } from "./cardData.ts";
-import { filterCardFields, paginateResults } from "./utils.ts";
+import { energyCards, pokemonCards, trainerCards } from "../cardData.ts";
+import { filterCardFields, paginateResults } from "../utils.ts";
 
 export function registerCardTools(server: McpServer) {
   // All-cards resource

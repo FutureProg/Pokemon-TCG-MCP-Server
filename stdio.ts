@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {Implementation as ServerImplementation} from "@modelcontextprotocol/sdk/types.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { registerPaginatedCardTools } from "./src/paginated-tools.ts";
-import { registerCardTools } from "./src/tools.ts";
+import { registerPaginatedCardTools } from "./src/mcp/paginated-tools.ts";
+import { registerCardTools } from "./src/mcp/tools.ts";
 import { exit } from "node:process";
 
 export const startStdioServer = async (serverArgs: ServerImplementation) => {

@@ -2,9 +2,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Implementation as ServerImplementation } from "@modelcontextprotocol/sdk/types.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { toReqRes, toFetchResponse } from "fetch-to-node";
-import { registerPaginatedCardTools } from "./src/paginated-tools.ts";
-import { registerCardTools } from "./src/tools.ts";
-import { registerApiTools } from "./src/apiTools.ts";
+import { registerPaginatedCardTools } from "./src/mcp/paginated-tools.ts";
+import { registerCardTools } from "./src/mcp/tools.ts";
+import { registerApiTools } from "./src/mcp/apiTools.ts";
 
 export const startHttpServer = (serverArgs: ServerImplementation) => {
   console.log("Starting HTTP Server");
