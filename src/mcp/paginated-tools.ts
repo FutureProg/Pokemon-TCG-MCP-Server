@@ -1,9 +1,9 @@
 // Paginated card tools with field filtering
 import { z } from "npm:zod";
-import { pokemonCards, trainerCards, energyCards } from "../cardData.ts";
 import { filterCardFields, paginateResults } from "../utils.ts";
 
-export function registerPaginatedCardTools(server: any) {
+export async function registerPaginatedCardTools(server: any) {
+  const { pokemonCards, trainerCards, energyCards, sets: cardSets } = await import("../cardData.ts");
   // Paginated card search tool
   server.tool(
     "paginated-card-search",
