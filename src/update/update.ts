@@ -24,7 +24,7 @@ export const updateCards = async (octokit: Octokit) => {
             }
             if (card.supertype === "Trainer") {
                 trainerCards.push(card);
-            } else if (card.supertype === "Pokemon") {
+            } else if (card.supertype === "Pokémon") {
                 pokemonCards.push(card);
             } else if (card.supertype === "Energy") {
                 energyCards.push(card);
