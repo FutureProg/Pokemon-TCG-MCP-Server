@@ -1,35 +1,37 @@
 // Utility functions for the Pokemon TCG MCP Server
 
+import type { Card } from "../types.d.ts";
+
 /**
  * Filters card data to include only essential fields
  * This reduces the size of the response and helps prevent Claude from hitting message size limits
  */
-export const filterCardFields = (cards: any[], fieldSet: 'minimal' | 'standard' | 'full' = 'standard'): any[] => {
+export const filterCardFields = (cards: Card[], fieldSet: 'minimal' | 'standard' | 'full' = 'standard'): Card[] | Partial<Card>[] => {
   if (fieldSet === 'full') {
     return cards; // Return all fields
   }
   
   // Define field sets
-  const minimalFields = ['id', 'name', 'supertype', 'subtypes', 'types'];
+  const minimalFields = ['id', 'name', 'supertype', 'subtypes', 'types'] as const;
   const standardFields = [
     ...minimalFields,
     'hp', 'evolvesFrom', 'evolvesTo', 
     'attacks', 'abilities',
     'weaknesses', 'resistances', 'retreatCost',
     'images'
-  ];
+  ] as const;
   
   // Select which fields to keep based on fieldSet parameter
   const fieldsToKeep = fieldSet === 'minimal' ? minimalFields : standardFields;
   
   // Filter the cards
   return cards.map(card => {
-    const filteredCard: Record<string, any> = {};
+    const filteredCard = {} as Partial<Card>;
     
     // Only copy fields that are in our fieldsToKeep list
-    fieldsToKeep.forEach(field => {
+    fieldsToKeep.forEach((field: keyof Card) => {
       if (card[field] !== undefined) {
-        filteredCard[field] = card[field];
+        (filteredCard as Record<string, unknown>)[field] = card[field];
       }
     });
     

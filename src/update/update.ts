@@ -16,7 +16,7 @@ export const updateCards = async (octokit: Octokit) => {
     }
     cardFiles.forEach(({data}) => {
         const dataStr = data.toString();
-        const dataArr = JSON.parse(dataStr) as any[];
+        const dataArr = JSON.parse(dataStr) as Card[];
 
         dataArr.forEach((card: Card) => {
             if (card.legalities?.standard !== 'Legal') {

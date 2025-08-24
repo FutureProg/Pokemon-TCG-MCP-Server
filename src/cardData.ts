@@ -8,7 +8,7 @@ export const trainerCards: Card[] = [];
 export const energyCards: Card[] = [];
 export const sets: CardSet[] = [];
 
-const loadJsonData = (filePath: string): any => {
+const loadJsonData = (filePath: string): object | Array<unknown> | null => {
   filePath = path.join(import.meta.dirname ?? '', filePath);
   try {
     const data = readFileSync(filePath, "utf-8");
@@ -23,6 +23,6 @@ export const loadCardData = () => {
   pokemonCards.splice(0, pokemonCards.length, ...loadJsonData("../data/cards/pokemon-cards.json") as Card[]);
   trainerCards.splice(0, trainerCards.length, ...loadJsonData("../data/cards/trainer-cards.json") as Card[]);
   energyCards.splice(0, energyCards.length, ...loadJsonData("../data/cards/energy-cards.json") as Card[]);
-  sets.splice(0, sets.length, ...loadJsonData("../data/cards/sets.json"));
+  sets.splice(0, sets.length, ...loadJsonData("../data/cards/sets.json") as CardSet[]);
   return { pokemonCards, trainerCards, energyCards, sets };
 }
