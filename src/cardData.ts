@@ -14,6 +14,6 @@ const loadJsonData = (filePath: string): any => {
   }
 };
 
-export const pokemonCards = loadJsonData("../data/Standard-Pokemon-Cards-2025-04-10T01-35-31-480Z.json") as Card[];
-export const trainerCards = loadJsonData("../data/Standard-Trainer-Cards-2025-04-10T01-32-57-466Z.json") as Card[];
-export const energyCards = loadJsonData("../data/Standard-Energy-Cards-2025-04-10T01-36-14-513Z.json") as Card[];
+export const pokemonCards = loadJsonData("../data/cards/pokemon-cards.json") as Card[];
+export const trainerCards = loadJsonData("../data/cards/trainer-cards.json") as Card[];
+export const energyCards = loadJsonData("../data/cards/energy-cards.json") as Card[];
