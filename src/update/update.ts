@@ -44,10 +44,10 @@ export const updateCards = async (octokit: Octokit) => {
 };
 
 export const updateSets = async (octokit: Octokit) => {
-    const setDownloadUrls = await getDownloadUrls(octokit, "sets");
-    const setFiles = await fetchFiles(octokit, setDownloadUrls);
+    const setDownloadUrl = 'https://raw.githubusercontent.com/PokemonTCG/pokemon-tcg-data/refs/heads/master/sets/en.json';
+    const setFiles = await fetchFiles(octokit, [setDownloadUrl]);
     
     setFiles.forEach(async ({data}) => {
-       await Deno.writeTextFile(`./data/sets.json`, data.toString(), {createNew: true});
+       await Deno.writeTextFile(`./data/cards/sets.json`, data.toString(), {createNew: true});
     });
 };
