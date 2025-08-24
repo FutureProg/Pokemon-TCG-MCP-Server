@@ -27,10 +27,10 @@ export const startHttpServer = async (serverArgs: ServerImplementation, port: nu
   });
   
   // Connect the server to the transport
-  await server.connect(transport).then(() => {
+  return await server.connect(transport).then(() => {
     console.log("MCP Server connected to HTTP transport");
     
-    Deno.serve({ port }, async (req) => {
+    return Deno.serve({ port }, async (req) => {
       console.log(`${req.method} ${req.url}`);
       
       if (req.method === "POST") {
@@ -105,7 +105,8 @@ export const startHttpServer = async (serverArgs: ServerImplementation, port: nu
         });
       }
     });
-  }).catch((error) => {
+  })
+  .catch((error) => {
     console.error("Failed to connect server to transport:", error);
     Deno.exit(1);
   });
