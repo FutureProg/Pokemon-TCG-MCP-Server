@@ -4,6 +4,10 @@ import { filterCardFields, paginateResults } from "../utils.ts";
 
 export async function registerPaginatedCardTools(server: any) {
   const { pokemonCards, trainerCards, energyCards, sets: cardSets } = await import("../cardData.ts");
+  console.log(`Loaded ${pokemonCards.length} pokemon cards`);
+  console.log(`Loaded ${trainerCards.length} trainer cards`);
+  console.log(`Loaded ${energyCards.length} energy cards`);
+  console.log(`Loaded ${cardSets.length} card sets.`);
   // Paginated card search tool
   server.tool(
     "paginated-card-search",
