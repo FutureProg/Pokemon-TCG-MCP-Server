@@ -4,9 +4,16 @@
             "type": "stdio",
             "command": "deno",
             "args": [
-                "task",
-                "start"
-            ]
+                "run",
+                "--allow-net",
+                "--allow-read",
+                "--allow-env",
+                "--env-file",
+                "main.ts"
+            ],
+            "env": {
+                "MCP_SERVER_TRANSPORT": "stdio"
+            }
         },
         "pokemonTCGHttp": {
             "url": "http://localhost:8000",
