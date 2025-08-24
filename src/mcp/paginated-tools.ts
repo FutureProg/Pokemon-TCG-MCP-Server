@@ -1,8 +1,9 @@
 // Paginated card tools with field filtering
 import { z } from "npm:zod";
 import { filterCardFields, paginateResults } from "../utils.ts";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-export async function registerPaginatedCardTools(server: any) {
+export async function registerPaginatedCardTools(server: McpServer) {
   const { pokemonCards, trainerCards, energyCards, sets: cardSets } = await import("../cardData.ts");
   console.log(`Loaded ${pokemonCards.length} pokemon cards`);
   console.log(`Loaded ${trainerCards.length} trainer cards`);
