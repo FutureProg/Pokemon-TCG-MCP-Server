@@ -36,7 +36,18 @@ export const updateCards = async (octokit: Octokit) => {
     console.log("Found", energyCards.length, "legal energy cards");
 
     // Write the categorized card data to separate files
-    await Deno.writeTextFile("./data/cards/trainer-cards.json", JSON.stringify(trainerCards, null, 2));
-    await Deno.writeTextFile("./data/cards/pokemon-cards.json", JSON.stringify(pokemonCards, null, 2));
-    await Deno.writeTextFile("./data/cards/energy-cards.json", JSON.stringify(energyCards, null, 2));
+    return Promise.all([
+        await Deno.writeTextFile("./data/cards/trainer-cards.json", JSON.stringify(trainerCards, null, 2)),
+        await Deno.writeTextFile("./data/cards/pokemon-cards.json", JSON.stringify(pokemonCards, null, 2)),
+        await Deno.writeTextFile("./data/cards/energy-cards.json", JSON.stringify(energyCards, null, 2))
+    ]);
+};
+
+export const updateSets = async (octokit: Octokit) => {
+    const setDownloadUrls = await getDownloadUrls(octokit, "sets");
+    const setFiles = await fetchFiles(octokit, setDownloadUrls);
+    
+    setFiles.forEach(async ({data}) => {
+       await Deno.writeTextFile(`./data/sets.json`, data.toString(), {createNew: true});
+    });
 };

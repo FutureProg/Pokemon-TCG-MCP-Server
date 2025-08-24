@@ -17,6 +17,8 @@ if (args.update) {
     auth: Deno.env.get("GITHUB_API_KEY"),
   });
   await updateCards(octo);
+  console.log("Card data update complete.");  
+  Deno.exit(0);
 } else {
   // Initialize the MCP server
   const serverArgs: ServerImplementation = {
