@@ -71,7 +71,8 @@ if (args.update) {
 
   console.log(`Transport Type: ${transportType}`);
   if (transportType === "http") {
-    startHttpServer(serverArgs);
+    const port = Deno.env.get("PORT") ? parseInt(Deno.env.get("PORT")!) : undefined;
+    startHttpServer(serverArgs, port);
   } else {
     startStdioServer(serverArgs);
   }
