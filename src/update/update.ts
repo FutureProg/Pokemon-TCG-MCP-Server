@@ -48,6 +48,6 @@ export const updateSets = async (octokit: Octokit) => {
     const setFiles = await fetchFiles(octokit, [setDownloadUrl]);
     
     setFiles.forEach(async ({data}) => {
-       await Deno.writeTextFile(`./data/cards/sets.json`, data.toString(), {createNew: true});
+       await Deno.writeTextFile(`./data/cards/sets.json`, data.toString(), {create: true});
     });
 };
