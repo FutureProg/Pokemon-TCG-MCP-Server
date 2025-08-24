@@ -18,7 +18,10 @@ export const updateCards = async (octokit: Octokit) => {
         const dataStr = data.toString();
         const dataArr = JSON.parse(dataStr) as any[];
 
-        dataArr.forEach(card => {
+        dataArr.forEach((card: Card) => {
+            if (card.legalities?.standard !== 'Legal') {
+                return;
+            }
             if (card.supertype === "Trainer") {
                 trainerCards.push(card);
             } else if (card.supertype === "Pokemon") {
@@ -28,6 +31,9 @@ export const updateCards = async (octokit: Octokit) => {
             }
         });
     });
+    console.log("Found", trainerCards.length, "legal trainer cards");
+    console.log("Found", pokemonCards.length, "legal pokemon cards");
+    console.log("Found", energyCards.length, "legal energy cards");
 
     // Write the categorized card data to separate files
     await Deno.writeTextFile("./data/cards/trainer-cards.json", JSON.stringify(trainerCards, null, 2));
