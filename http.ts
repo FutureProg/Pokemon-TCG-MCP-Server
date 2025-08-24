@@ -6,7 +6,7 @@ import { registerPaginatedCardTools } from "./src/mcp/paginated-tools.ts";
 import { registerCardTools } from "./src/mcp/tools.ts";
 import { registerApiTools } from "./src/mcp/apiTools.ts";
 
-export const startHttpServer = async (serverArgs: ServerImplementation) => {
+export const startHttpServer = async (serverArgs: ServerImplementation, port: number = 8000) => {
   console.log("Starting HTTP Server");
   
   // Create the MCP server
@@ -29,10 +29,6 @@ export const startHttpServer = async (serverArgs: ServerImplementation) => {
   // Connect the server to the transport
   await server.connect(transport).then(() => {
     console.log("MCP Server connected to HTTP transport");
-    
-    // Start the HTTP server on port 8000
-    const port = 8000;
-    console.log(`Listening on http://0.0.0.0:${port}/ (http://localhost:${port}/)`);
     
     Deno.serve({ port }, async (req) => {
       console.log(`${req.method} ${req.url}`);
