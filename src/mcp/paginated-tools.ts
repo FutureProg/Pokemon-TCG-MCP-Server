@@ -121,6 +121,52 @@ export async function registerPaginatedCardTools(server: any) {
     }
   );
   
+  server.tool(
+    "paginated-set-search",
+    "Find the set details by set code or other fields with pagination",
+    {
+      query: z.string(),
+      page: z.number().optional(),
+      pageSize: z.number().optional()
+    },
+    ({query, page = 1, pageSize = 10}: {
+      query: string,
+      page?: number,
+      pageSize?: number
+    }) => {
+      // Filter sets by code, name, or other fields
+      const q = query.toLowerCase();
+      const filteredSets = cardSets.filter(set =>
+        (set.ptcgoCode && set.ptcgoCode.toLowerCase().includes(q)) ||
+        (set.name && set.name.toLowerCase().includes(q)) ||
+        (set.series && set.series.toLowerCase().includes(q) ||
+        (set.id && set.id.toLowerCase().includes(q)))
+      );
+
+      // Apply pagination
+      const paginatedResults = paginateResults(filteredSets, { page, pageSize });
+
+      // Create response with pagination metadata
+      return {
+        content: [{
+          type: 'resource',
+          resource: {
+            uri: `file://paginated-set-search.json`,
+            mimeType: "application/json",
+            text: JSON.stringify({
+              sets: paginatedResults.results,
+              pagination: paginatedResults.pagination,
+              query: {
+                searchTerm: query
+              }
+            })
+          }
+        }]
+      };
+    }
+  );
+    
+  
   // Paginated find by type with field filtering
   server.tool(
     "paginated-type-search",
