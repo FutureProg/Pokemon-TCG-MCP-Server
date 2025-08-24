@@ -11,9 +11,7 @@ export const startStdioServer = async (serverArgs: ServerImplementation) => {
   registerCardTools(server);
   registerPaginatedCardTools(server);
   const transport = new StdioServerTransport();
-  await server.connect(transport);
-
-  // Connect the server to the transport once
+  
   await server.connect(transport).catch((error) => {
     console.error("Fatal error connecting server:", error);
     exit(1);
