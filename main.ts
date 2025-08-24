@@ -4,6 +4,7 @@ import { startStdioServer } from "./stdio.ts";
 import { parseArgs } from "@std/cli/parse-args";
 import { Octokit } from "https://esm.sh/octokit?dts";
 import { updateCards, updateSets } from "./src/update/update.ts";
+import { loadCardData } from "./src/cardData.ts";
 
 const args = parseArgs(Deno.args, {
   boolean: "update",
@@ -22,6 +23,9 @@ if (args.update) {
   ]);   
   Deno.exit(0);
 } else {
+  console.log("Loading card data from disk");
+  loadCardData();
+  
   // Initialize the MCP server
   const serverArgs: ServerImplementation = {
     name: "Pokemon TCG",
